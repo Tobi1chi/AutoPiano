@@ -168,6 +168,17 @@
       </div>
     </div>
 
+    <InstrumentPanel
+      :instruments="instruments"
+      :current-instrument-id="currentInstrumentId"
+      :default-instrument-id="defaultInstrumentId"
+      :current-resolved-source="currentResolvedSource"
+      :instrument-statuses="instrumentStatuses"
+      @activate="activateInstrument"
+      @preload="preloadInstrument"
+      @set-default="setDefaultInstrument"
+    />
+
     <canvas id="audioEffectCanvas" ref="audioEffectCanvas">您的浏览器不支持<pre>Canvas</pre>。请升级到最新版的chrome、firefox、edge等浏览器。</canvas>
 
   </div>
@@ -175,11 +186,12 @@
 
 <script>
 import Vue from 'vue'
-import Tone from 'tone'
 import Observe from 'observe'
 import { Notes, OBEvent } from 'config'
-import SmapleLibrary from '@/lib/Tonejs-Instruments'
-import { debounce } from '@/lib/wutils'
+import InstrumentPanel from '@/components/InstrumentPanel'
+import { DEFAULT_INSTRUMENT_ID, getInstrumentManifests, isValidInstrumentId } from '@/config/instrumentManifests'
+import instrumentEngine from '@/services/instrumentEngine'
+import { loadInstrumentPreference, saveInstrumentPreference } from '@/services/instrumentPreferenceStorage'
 
 import pianoAutoPlayMixin from '@/mixins/pianoAutoPlayMixin'
 import xmlAutoPlayMixin from '@/mixins/xmlAutoPlayMixin'
@@ -188,8 +200,11 @@ import midiAutoPlayMixin from '@/mixins/midiAutoPlayMixin'
 export default {
   name: 'Piano',
   mixins: [pianoAutoPlayMixin, xmlAutoPlayMixin, midiAutoPlayMixin],
-  components: {},
+  components: {
+    InstrumentPanel
+  },
   data() {
+    const preference = loadInstrumentPreference()
     return {
       DEV: false,
       pianoShow: false,
@@ -199,6 +214,12 @@ export default {
       showNoteName: false, // 显示音符名
       Notes: Notes,
       synth: null,
+      instrumentEngine,
+      instruments: getInstrumentManifests(),
+      instrumentStatuses: instrumentEngine.getStatuses(),
+      currentInstrumentId: DEFAULT_INSTRUMENT_ID,
+      currentResolvedSource: null,
+      defaultInstrumentId: preference.defaultInstrumentId || DEFAULT_INSTRUMENT_ID,
       keydownTimer: null,
       keyLock: false,
       lastKeyCode: '',
@@ -220,12 +241,54 @@ export default {
       }, 300)
       this.bindKeyBoradEvent()
       this.setListener()
-
-      this.synth = SmapleLibrary.load({
-        instruments: "piano"
-      }).toMaster()
-
-      // this.synth = new Tone.PolySynth( 10 ).toMaster()
+      await this.initializeInstrumentEngine()
+    },
+    syncInstrumentState() {
+      const publicState = this.instrumentEngine.getPublicState()
+      this.instrumentStatuses = publicState.statuses
+      this.currentInstrumentId = publicState.currentInstrumentId
+      this.currentResolvedSource = publicState.currentResolvedSource
+      this.synth = this.instrumentEngine.currentSampler
+    },
+    async initializeInstrumentEngine() {
+      const initialInstrumentId = isValidInstrumentId(this.defaultInstrumentId)
+        ? this.defaultInstrumentId
+        : DEFAULT_INSTRUMENT_ID
+      try {
+        if (initialInstrumentId !== this.defaultInstrumentId) {
+          this.defaultInstrumentId = DEFAULT_INSTRUMENT_ID
+          saveInstrumentPreference({
+            defaultInstrumentId: DEFAULT_INSTRUMENT_ID
+          })
+        }
+        await this.instrumentEngine.initialize(initialInstrumentId)
+      } catch (error) {
+        await this.instrumentEngine.initialize(DEFAULT_INSTRUMENT_ID)
+      }
+      this.syncInstrumentState()
+    },
+    async activateInstrument(instrumentId) {
+      try {
+        await this.instrumentEngine.activateInstrument(instrumentId)
+      } finally {
+        this.syncInstrumentState()
+      }
+    },
+    async preloadInstrument(instrumentId) {
+      try {
+        await this.instrumentEngine.preloadInstrument(instrumentId)
+      } finally {
+        this.syncInstrumentState()
+      }
+    },
+    setDefaultInstrument(instrumentId) {
+      if (!isValidInstrumentId(instrumentId)) {
+        return
+      }
+      this.defaultInstrumentId = instrumentId
+      saveInstrumentPreference({
+        defaultInstrumentId: instrumentId
+      })
     },
     computeEleSize() {
       let wkey_width = $('.piano-key-wrap').width() / 36;
@@ -342,6 +405,14 @@ export default {
         if (keyCode == ShiftKeyCode) {
           this.enableBlackKey = false;
         }
+        if (this.keydownTimer) {
+          clearTimeout(this.keydownTimer)
+          this.keydownTimer = null
+        }
+        this.keyLock = false
+        if (keyCode == this.lastKeyCode || `b${keyCode}` == this.lastKeyCode) {
+          this.lastKeyCode = ''
+        }
         $(`.wkey`).removeClass('wkey-active')
         $(`.bkey`).removeClass('bkey-active')
       }, false)
@@ -368,10 +439,10 @@ export default {
       }
     },
     // 触发单个音符播放
-    playNote(notename = 'C4', duration = '1n') {
-      if (!this.synth) return
+    async playNote(notename = 'C4', duration = '1n', velocity = 0.85) {
       try {
-        this.synth.triggerAttackRelease(notename, duration);
+        await this.instrumentEngine.playNote(notename, duration, velocity)
+        this.synth = this.instrumentEngine.currentSampler
       } catch (e) {}
     }
   }
