@@ -29,13 +29,27 @@ function getConfiguredSoundFontUrls() {
 const instrumentManifests = [
   {
     id: 'piano',
+    label: 'Classic Piano',
+    family: 'Keyboard',
+    provider: 'soundfont',
+    sampleSource: 'soundfont',
+    preloadStrategy: 'lazy',
+    description: '默认钢琴，使用 GeneralUser GS 的 Acoustic Grand Piano 提供更快的首音响应。',
+    soundfont: {
+      urls: getConfiguredSoundFontUrls(),
+      channel: 0,
+      program: 0
+    }
+  },
+  {
+    id: 'piano-hq',
     label: 'Concert Piano',
     family: 'Keyboard',
     provider: 'tone-piano',
     sampleSource: 'package',
     defaultVolume: -1,
     preloadStrategy: 'eager',
-    description: '使用 @tonejs/piano 的 Salamander Grand Piano 作为主钢琴音源。',
+    description: '高质量钢琴，使用 @tonejs/piano 的 Salamander Grand Piano，页面启动后会后台预加载。',
     tonePianoOptions: {
       velocities: 6,
       maxPolyphony: 24,
@@ -59,7 +73,7 @@ const instrumentManifests = [
     description: 'GeneralUser GS 木吉他音色。',
     soundfont: {
       urls: getConfiguredSoundFontUrls(),
-      channel: 0,
+      channel: 1,
       program: 25
     }
   },
@@ -73,7 +87,7 @@ const instrumentManifests = [
     description: 'GeneralUser GS 长笛音色。',
     soundfont: {
       urls: getConfiguredSoundFontUrls(),
-      channel: 1,
+      channel: 2,
       program: 72
     }
   },
@@ -87,7 +101,7 @@ const instrumentManifests = [
     description: 'GeneralUser GS 木琴音色。',
     soundfont: {
       urls: getConfiguredSoundFontUrls(),
-      channel: 2,
+      channel: 3,
       program: 13
     }
   }

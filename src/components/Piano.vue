@@ -191,6 +191,7 @@ import { Notes, OBEvent } from 'config'
 import InstrumentPanel from '@/components/InstrumentPanel'
 import { DEFAULT_INSTRUMENT_ID, getInstrumentManifests, isValidInstrumentId } from '@/config/instrumentManifests'
 import instrumentEngine from '@/services/instrumentEngine'
+import AutoPlayScheduler from '@/services/autoPlayScheduler'
 import { loadInstrumentPreference, saveInstrumentPreference } from '@/services/instrumentPreferenceStorage'
 
 import pianoAutoPlayMixin from '@/mixins/pianoAutoPlayMixin'
@@ -220,6 +221,8 @@ export default {
       currentInstrumentId: DEFAULT_INSTRUMENT_ID,
       currentResolvedSource: null,
       defaultInstrumentId: preference.defaultInstrumentId || DEFAULT_INSTRUMENT_ID,
+      hasQueuedRecommendedPreload: false,
+      autoPlayScheduler: null,
       keydownTimer: null,
       keyLock: false,
       lastKeyCode: '',
@@ -231,6 +234,10 @@ export default {
   },
   beforeDestroy() {
     this.keydownTimer = null
+    if (this.autoPlayScheduler) {
+      this.autoPlayScheduler.stop()
+      this.autoPlayScheduler = null
+    }
   },
   methods: {
     // 钢琴初始化
@@ -241,6 +248,7 @@ export default {
       }, 300)
       this.bindKeyBoradEvent()
       this.setListener()
+      this.bindRecommendedPreloadWarmup()
       await this.initializeInstrumentEngine()
     },
     syncInstrumentState() {
@@ -249,6 +257,37 @@ export default {
       this.currentInstrumentId = publicState.currentInstrumentId
       this.currentResolvedSource = publicState.currentResolvedSource
       this.synth = this.instrumentEngine.currentSampler
+    },
+    getBackgroundPreloadInstrumentIds(currentInstrumentId) {
+      return this.instruments
+        .filter(instrument => instrument.preloadStrategy === 'eager' && instrument.id !== currentInstrumentId)
+        .map(instrument => instrument.id)
+    },
+    preloadRecommendedInstruments() {
+      if (this.hasQueuedRecommendedPreload) {
+        return
+      }
+      this.hasQueuedRecommendedPreload = true
+      const preloadIds = this.getBackgroundPreloadInstrumentIds(this.currentInstrumentId)
+      preloadIds.forEach((instrumentId) => {
+        this.instrumentEngine.preloadInstrument(instrumentId)
+          .catch(() => {})
+          .finally(() => {
+            this.syncInstrumentState()
+          })
+      })
+    },
+    bindRecommendedPreloadWarmup() {
+      const warmup = () => {
+        this.preloadRecommendedInstruments()
+        document.removeEventListener('pointerdown', warmup, true)
+        document.removeEventListener('keydown', warmup, true)
+        document.removeEventListener('touchstart', warmup, true)
+      }
+
+      document.addEventListener('pointerdown', warmup, true)
+      document.addEventListener('keydown', warmup, true)
+      document.addEventListener('touchstart', warmup, true)
     },
     async initializeInstrumentEngine() {
       const initialInstrumentId = isValidInstrumentId(this.defaultInstrumentId)
@@ -266,6 +305,61 @@ export default {
         await this.instrumentEngine.initialize(DEFAULT_INSTRUMENT_ID)
       }
       this.syncInstrumentState()
+    },
+    ensureAutoPlayScheduler() {
+      if (!this.autoPlayScheduler) {
+        this.autoPlayScheduler = new AutoPlayScheduler({
+          getCurrentTime: () => this.instrumentEngine.getCurrentAudioTime(),
+          scheduleNote: (note, when) => this.instrumentEngine.playNoteAt(
+            note.noteName,
+            when,
+            `${note.duration}s`,
+            note.velocity
+          ),
+          stopActiveNotes: () => this.instrumentEngine.stopActiveNotes()
+        })
+      }
+
+      return this.autoPlayScheduler
+    },
+    async ensurePlaybackReady() {
+      await this.instrumentEngine.ensureCurrentInstrumentReady()
+      this.syncInstrumentState()
+    },
+    clearAutoPlayHighlights() {
+      $(`.piano-key`).removeClass('auto-key-active')
+    },
+    highlightScheduledGroup(group) {
+      group.notes.forEach((note) => {
+        $(`[data-name="${note.noteName}"]`).addClass('auto-key-active')
+      })
+    },
+    unhighlightScheduledGroup(group) {
+      group.notes.forEach((note) => {
+        $(`[data-name="${note.noteName}"]`).removeClass('auto-key-active')
+      })
+    },
+    async scheduleAutoPlayEvents(events = []) {
+      this.ensureAutoPlayScheduler()
+      await this.ensurePlaybackReady()
+      this.clearAutoPlayHighlights()
+
+      return this.autoPlayScheduler.start(events, {
+        onGroupStart: (group) => {
+          this.highlightScheduledGroup(group)
+        },
+        onGroupEnd: (group) => {
+          this.unhighlightScheduledGroup(group)
+        }
+      })
+    },
+    stopScheduledAutoPlay() {
+      if (this.autoPlayScheduler) {
+        this.autoPlayScheduler.stop()
+      } else {
+        this.instrumentEngine.stopActiveNotes()
+      }
+      this.clearAutoPlayHighlights()
     },
     async activateInstrument(instrumentId) {
       try {

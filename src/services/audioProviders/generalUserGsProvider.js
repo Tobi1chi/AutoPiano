@@ -1,4 +1,4 @@
-import { durationToMilliseconds, normalizeVelocity, noteNameToMidi } from '@/services/audioProviders/audioNoteUtils'
+import { durationToSeconds, normalizeVelocity, noteNameToMidi } from '@/services/audioProviders/audioNoteUtils'
 import { getTone } from '@/services/audioProviders/toneRuntime'
 import { loadModule } from '@/services/audioProviders/vendorModuleLoader'
 
@@ -17,9 +17,10 @@ class GeneralUserGsProvider {
     this.loadPromise = null
     this.loadedSource = null
     this.programCache = {}
-    this.releaseTimers = {}
     this.workletRegistered = false
     this.modulePromise = null
+    this.audioContext = null
+    this.activeNotes = {}
   }
 
   async loadSynthModule() {
@@ -41,6 +42,7 @@ class GeneralUserGsProvider {
     const nativeContext = context && context.rawContext
       ? (context.rawContext._nativeAudioContext || context.rawContext)
       : null
+    this.audioContext = nativeContext
     this.destinationNode = nativeContext ? nativeContext.destination : null
     return nativeContext
   }
@@ -115,16 +117,15 @@ class GeneralUserGsProvider {
     return this.loadPromise
   }
 
-  buildTimerKey(channel, midiNote) {
+  buildNoteKey(channel, midiNote) {
     return `${channel}:${midiNote}`
   }
 
-  clearReleaseTimer(channel, midiNote) {
-    const timerKey = this.buildTimerKey(channel, midiNote)
-    if (this.releaseTimers[timerKey]) {
-      clearTimeout(this.releaseTimers[timerKey])
-      delete this.releaseTimers[timerKey]
+  getCurrentTime() {
+    if (this.synth && typeof this.synth.currentTime === 'number') {
+      return this.synth.currentTime
     }
+    return this.audioContext ? this.audioContext.currentTime : 0
   }
 
   async load(manifest) {
@@ -141,21 +142,34 @@ class GeneralUserGsProvider {
   }
 
   async trigger(manifest, noteName, duration, velocity) {
+    return this.triggerAt(manifest, noteName, this.getCurrentTime(), duration, velocity)
+  }
+
+  async triggerAt(manifest, noteName, when, duration, velocity) {
     await this.load(manifest)
 
     const channel = manifest.soundfont.channel
     const midiNote = noteNameToMidi(noteName)
-    const releaseMs = durationToMilliseconds(duration)
+    const noteKey = this.buildNoteKey(channel, midiNote)
     const midiVelocity = Math.round(normalizeVelocity(velocity) * 127)
+    const releaseTime = Math.max(when, this.getCurrentTime()) + durationToSeconds(duration)
+    const startTime = Math.max(when, this.getCurrentTime())
 
-    this.clearReleaseTimer(channel, midiNote)
-    this.synth.noteOn(channel, midiNote, midiVelocity)
-    this.releaseTimers[this.buildTimerKey(channel, midiNote)] = setTimeout(() => {
+    if (this.activeNotes[noteKey] && this.activeNotes[noteKey] >= startTime) {
       try {
-        this.synth.noteOff(channel, midiNote)
+        this.synth.noteOff(channel, midiNote, {
+          time: Math.max(this.getCurrentTime(), startTime - 0.001)
+        })
       } catch (error) {}
-      delete this.releaseTimers[this.buildTimerKey(channel, midiNote)]
-    }, releaseMs)
+    }
+
+    this.synth.noteOn(channel, midiNote, midiVelocity, {
+      time: startTime
+    })
+    this.synth.noteOff(channel, midiNote, {
+      time: releaseTime
+    })
+    this.activeNotes[noteKey] = releaseTime
   }
 
   stop(manifest) {
@@ -164,10 +178,9 @@ class GeneralUserGsProvider {
     }
 
     const channel = manifest.soundfont.channel
-    Object.keys(this.releaseTimers).forEach((timerKey) => {
-      if (timerKey.indexOf(`${channel}:`) === 0) {
-        clearTimeout(this.releaseTimers[timerKey])
-        delete this.releaseTimers[timerKey]
+    Object.keys(this.activeNotes).forEach((noteKey) => {
+      if (noteKey.indexOf(`${channel}:`) === 0) {
+        delete this.activeNotes[noteKey]
       }
     })
 
@@ -179,6 +192,7 @@ class GeneralUserGsProvider {
       this.synth.destroy()
       this.synth = null
     }
+    this.activeNotes = {}
   }
 }
 

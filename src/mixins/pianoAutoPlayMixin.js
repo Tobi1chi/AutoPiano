@@ -46,47 +46,35 @@ export default {
       }
       return timeUnit * (+factor)
     },
+    buildNumberScoreEvents(step = 'C', musicScore = [], speed = 75) {
+      const events = []
+      const timeUnit = (60 * 1000) / speed
+      let elapsedMs = 0
+
+      musicScore.forEach((numNotation) => {
+        const notename = this.mapNum2NoteName(step, numNotation)
+        const durationMs = this.getNoteDuration(numNotation, timeUnit)
+
+        if (notename) {
+          events.push({
+            time: elapsedMs / 1000,
+            duration: Math.max(durationMs / 1000, 0.08),
+            velocity: 0.85,
+            noteName: notename
+          })
+        }
+
+        elapsedMs += durationMs
+      })
+
+      return events
+    },
     // 自动播放简谱
     autoPlayNumberScore (step = 'C', musicScore, speed = 75) {
-      $('.piano-key').removeClass('auto-key-active')
-      let timeUnit = (60 * 1000) / speed
-      let startStmp = new Date()
-      let i = 0
-      let playedTime = 0
-      let pressedNote
-
-      let loop = () => {
-        let curStmp = new Date()
-        let deltaTime = curStmp - startStmp
-        if (deltaTime > playedTime) {
-          // 播放下一个音符
-          if (pressedNote) {
-            $(`[data-keyCode=${pressedNote.keyCode}]`).removeClass('auto-key-active');
-          }
-          let numNotation = musicScore[i]
-          let notename = this.mapNum2NoteName(step, numNotation)
-          pressedNote = this.getNoteByName(notename)
-          if (pressedNote) $(`[data-keyCode=${pressedNote.keyCode}]`).addClass('auto-key-active')
-          this.playNote(notename)
-          playedTime += this.getNoteDuration(numNotation, timeUnit)
-          i++
-          if (i >= musicScore.length) {
-            setTimeout(() => {
-              $(`.piano-key`).removeClass('auto-key-active')
-            }, 1000)
-            clearInterval(loopTimer)
-            return
-          }
-        }
-      }
-      let loopTimer = setInterval(() => {
-        loop()
-      }, 20)
-
-      this.playTimers.push(loopTimer)
+      return this.scheduleAutoPlayEvents(this.buildNumberScoreEvents(step, musicScore, speed))
     },
     // 点击简谱列表播放音乐
-    playScoreByName(name = '天空之城') {
+    async playScoreByName(name = '天空之城') {
       let targetScore
       for (let k in this.ScoreNum) {
         let score = this.ScoreNum[k]
@@ -100,20 +88,16 @@ export default {
         let step = targetScore.step
         let speed = targetScore.speed
         if (this.StepMap[step]) {
-          this.autoPlayNumberScore(step, targetScore.mainTrack, speed)
+          let events = this.buildNumberScoreEvents(step, targetScore.mainTrack, speed)
           if (targetScore.backingTrack) {
-            this.autoPlayNumberScore(step, targetScore.backingTrack, speed)
+            events = events.concat(this.buildNumberScoreEvents(step, targetScore.backingTrack, speed))
           }
+          await this.scheduleAutoPlayEvents(events)
         }
       }
     },
     pauseAutoPlay() {
-      $(`.piano-key`).removeClass('auto-key-active')
-      this.playTimers.forEach((timer) => {
-        clearInterval(timer)
-        timer = null
-      })
-      this.playTimers.splice(0)
+      this.stopScheduledAutoPlay()
     }
   }
 }

@@ -132,7 +132,33 @@ class InstrumentEngine {
     return this.activateInstrument(targetId)
   }
 
+  async ensureCurrentInstrumentReady() {
+    if (!this.currentInstrumentManifest) {
+      return this.activateInstrument(DEFAULT_INSTRUMENT_ID)
+    }
+
+    await this.loadInstrument(this.currentInstrumentId)
+    return this.getPublicState()
+  }
+
+  getCurrentAudioTime() {
+    if (!this.currentInstrumentManifest) {
+      return 0
+    }
+
+    const provider = this.getProvider(this.currentInstrumentManifest)
+    if (provider && typeof provider.getCurrentTime === 'function') {
+      return provider.getCurrentTime()
+    }
+
+    return 0
+  }
+
   async playNote(noteName, duration, velocity) {
+    return this.playNoteAt(noteName, this.getCurrentAudioTime(), duration, velocity)
+  }
+
+  async playNoteAt(noteName, when, duration, velocity) {
     if (!this.currentInstrumentManifest) {
       await this.activateInstrument(DEFAULT_INSTRUMENT_ID)
     }
@@ -141,12 +167,22 @@ class InstrumentEngine {
       return
     }
 
-    await this.getProvider(this.currentInstrumentManifest).trigger(
+    const provider = this.getProvider(this.currentInstrumentManifest)
+    const triggerMethod = typeof provider.triggerAt === 'function'
+      ? provider.triggerAt.bind(provider)
+      : provider.trigger.bind(provider)
+
+    await triggerMethod(
       this.currentInstrumentManifest,
       noteName,
+      when,
       duration || '1n',
       velocity
     )
+  }
+
+  stopActiveNotes() {
+    this.stopCurrentInstrument()
   }
 }
 

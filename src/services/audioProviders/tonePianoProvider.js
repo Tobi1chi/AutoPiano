@@ -1,4 +1,4 @@
-import { durationToMilliseconds, normalizeVelocity } from '@/services/audioProviders/audioNoteUtils'
+import { durationToSeconds, normalizeVelocity } from '@/services/audioProviders/audioNoteUtils'
 import { getTone } from '@/services/audioProviders/toneRuntime'
 import { loadModule } from '@/services/audioProviders/vendorModuleLoader'
 
@@ -9,9 +9,10 @@ class TonePianoProvider {
     this.primaryPiano = null
     this.fallbackSampler = null
     this.activeInstrument = null
-    this.releaseTimers = {}
     this.pianoModulePromise = null
     this.loadPromise = null
+    this.audioContext = null
+    this.activeNotes = {}
   }
 
   async loadTonePianoModule() {
@@ -29,6 +30,9 @@ class TonePianoProvider {
         await Tone.start()
       } catch (error) {}
     }
+    this.audioContext = context && context.rawContext
+      ? (context.rawContext._nativeAudioContext || context.rawContext)
+      : null
     return Tone
   }
 
@@ -111,57 +115,55 @@ class TonePianoProvider {
     return this.loadPromise
   }
 
-  clearReleaseTimer(noteName) {
-    if (this.releaseTimers[noteName]) {
-      clearTimeout(this.releaseTimers[noteName])
-      delete this.releaseTimers[noteName]
-    }
+  getCurrentTime() {
+    return this.audioContext ? this.audioContext.currentTime : 0
   }
 
   async trigger(manifest, noteName, duration, velocity) {
+    return this.triggerAt(manifest, noteName, this.getCurrentTime(), duration, velocity)
+  }
+
+  async triggerAt(manifest, noteName, when, duration, velocity) {
     if (!this.activeInstrument) {
       await this.load(manifest)
     }
 
     const activeInstrument = this.activeInstrument
     const safeVelocity = normalizeVelocity(velocity)
+    const startTime = Math.max(when, this.getCurrentTime())
+    const releaseTime = startTime + durationToSeconds(duration)
 
     if (activeInstrument && typeof activeInstrument.keyDown === 'function') {
-      const releaseMs = durationToMilliseconds(duration)
-      if (this.releaseTimers[noteName]) {
+      if (this.activeNotes[noteName] && this.activeNotes[noteName] >= startTime) {
         try {
           activeInstrument.keyUp({
             note: noteName,
-            velocity: safeVelocity
+            velocity: safeVelocity,
+            time: Math.max(this.getCurrentTime(), startTime - 0.001)
           })
         } catch (error) {}
       }
-      this.clearReleaseTimer(noteName)
       activeInstrument.keyDown({
         note: noteName,
-        velocity: safeVelocity
+        velocity: safeVelocity,
+        time: startTime
       })
-      this.releaseTimers[noteName] = setTimeout(() => {
-        try {
-          activeInstrument.keyUp({
-            note: noteName,
-            velocity: safeVelocity
-          })
-        } catch (error) {}
-        delete this.releaseTimers[noteName]
-      }, releaseMs)
+      activeInstrument.keyUp({
+        note: noteName,
+        velocity: safeVelocity,
+        time: releaseTime
+      })
+      this.activeNotes[noteName] = releaseTime
       return
     }
 
     if (activeInstrument) {
-      activeInstrument.triggerAttackRelease(noteName, duration || '1n', undefined, safeVelocity)
+      activeInstrument.triggerAttackRelease(noteName, duration || '1n', startTime, safeVelocity)
     }
   }
 
   stop() {
-    Object.keys(this.releaseTimers).forEach((noteName) => {
-      this.clearReleaseTimer(noteName)
-    })
+    this.activeNotes = {}
 
     if (this.activeInstrument && typeof this.activeInstrument.stopAll === 'function') {
       this.activeInstrument.stopAll()

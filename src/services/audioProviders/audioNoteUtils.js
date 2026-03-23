@@ -51,10 +51,14 @@ export function durationToMilliseconds(duration = '1n') {
   return 800
 }
 
+export function durationToSeconds(duration = '1n') {
+  return durationToMilliseconds(duration) / 1000
+}
+
 export function normalizeVelocity(velocity) {
   if (typeof velocity !== 'number') {
-    return 0.85
+    return 0.72
   }
 
-  return Math.max(0.15, Math.min(1, velocity))
+  return Math.max(0.15, Math.min(0.82, velocity))
 }
