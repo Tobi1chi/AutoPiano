@@ -2,7 +2,7 @@
 @import url('../assets/style/variable.less');
 
 #page-mobile.page-mobile { width: 100%; height: 100%; padding: 1px; font-family: 'Avenir', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; color: #2c3e50; position: absolute; top: 0; left: 0; overflow-x: hidden;
-  .app-bg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: -100; opacity: 0.5; background-size: cover; }
+  .app-bg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: -100; background-size: cover; background-position: center center; background-repeat: no-repeat; }
   .app-content { width: 100%; height: 100%; overflow-x: hidden; overflow-y: scroll; font-size: 30px; position: relative;
     .mobile-tip { padding: 5px; float: right; background: #fff; color: @c-red; font-size: 30px; }
 
@@ -82,6 +82,7 @@ import RandomLyric from '@/components/RandomLyric'
 import Piano from '@/components/Piano'
 import ManualPlayScoreList from '@/components/ManualPlayScoreList'
 import AutoPlayScoreList from '@/components/AutoPlayScoreList'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'AutoPianoMobile',
@@ -94,12 +95,17 @@ export default {
     AutoPlayScoreList
   },
   data() {
-    return {
-      appBgStyle: ''
+    return {}
+  },
+  computed: {
+    ...mapGetters([
+      '$currentWallpaperStyle'
+    ]),
+    appBgStyle() {
+      return this.$currentWallpaperStyle
     }
   },
   beforeMount() {
-    this.setWallPaper()
     if (window.isMobile) {
       // alert('为了您更好的浏览体验，请在电脑端浏览器访问: \n www.autopiano.cn')
       this.horizontalScreen('body')
@@ -111,12 +117,6 @@ export default {
     }
   },
   methods: {
-    // 背景壁纸 移动端不需要设随机壁纸
-    setWallPaper() {
-      // 埃菲尔铁塔背景
-      let src = 'https://i.loli.net/2019/04/28/5cc5bbb4c3a7b.jpg'
-      this.appBgStyle = `background: url(${src}) no-repeat; background-size: cover;`
-    },
     /*强制横屏*/
     horizontalScreen(className) {
       // transform 强制横屏
@@ -146,4 +146,3 @@ export default {
   }
 }
 </script>
-

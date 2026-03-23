@@ -5,6 +5,7 @@
   "author": "ZhouJihao <249662605@qq.com>",
   "private": true,
   "scripts": {
+    "build": "node build/build.js",
     "start": "node build/dev-server.js"
   },
   "dependencies": {

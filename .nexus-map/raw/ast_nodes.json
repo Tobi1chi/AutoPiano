@@ -1,0 +1,413 @@
+{
+  "languages": [
+    "javascript",
+    "vue"
+  ],
+  "stats": {
+    "total_files": 42,
+    "total_lines": 5387,
+    "parse_errors": 29,
+    "truncated": false,
+    "truncated_nodes": 0,
+    "supported_file_counts": {
+      "javascript": 29,
+      "vue": 13
+    },
+    "languages_with_structural_queries": [
+      "c",
+      "cpp",
+      "csharp",
+      "elixir",
+      "gdscript",
+      "go",
+      "java",
+      "javascript",
+      "kotlin",
+      "lua",
+      "php",
+      "python",
+      "ruby",
+      "rust",
+      "scala",
+      "swift",
+      "tsx",
+      "typescript"
+    ],
+    "languages_with_custom_queries": [
+      "javascript"
+    ],
+    "module_only_file_counts": {
+      "vue": 13
+    },
+    "known_unsupported_file_counts": {},
+    "configured_but_unavailable_file_counts": {},
+    "custom_language_config_paths": [
+      "/Volumes/111/portable_wd/AutoPiano/.nexus-map/raw/language-config.json"
+    ]
+  },
+  "nodes": [
+    {
+      "id": ".postcssrc",
+      "type": "Module",
+      "label": "postcssrc",
+      "path": ".postcssrc.js",
+      "lines": 9,
+      "lang": "javascript"
+    },
+    {
+      "id": "config.dev.env",
+      "type": "Module",
+      "label": "env",
+      "path": "config/dev.env.js",
+      "lines": 7,
+      "lang": "javascript"
+    },
+    {
+      "id": "config.index",
+      "type": "Module",
+      "label": "index",
+      "path": "config/index.js",
+      "lines": 39,
+      "lang": "javascript"
+    },
+    {
+      "id": "config.prod.env",
+      "type": "Module",
+      "label": "env",
+      "path": "config/prod.env.js",
+      "lines": 4,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.App",
+      "type": "Module",
+      "label": "App",
+      "path": "src/App.vue",
+      "lines": 71,
+      "lang": "vue"
+    },
+    {
+      "id": "src.components.AutoPlayScoreList",
+      "type": "Module",
+      "label": "AutoPlayScoreList",
+      "path": "src/components/AutoPlayScoreList.vue",
+      "lines": 226,
+      "lang": "vue"
+    },
+    {
+      "id": "src.components.CommodityCard",
+      "type": "Module",
+      "label": "CommodityCard",
+      "path": "src/components/CommodityCard.vue",
+      "lines": 59,
+      "lang": "vue"
+    },
+    {
+      "id": "src.components.CommodityList",
+      "type": "Module",
+      "label": "CommodityList",
+      "path": "src/components/CommodityList.vue",
+      "lines": 88,
+      "lang": "vue"
+    },
+    {
+      "id": "src.components.Footer",
+      "type": "Module",
+      "label": "Footer",
+      "path": "src/components/Footer.vue",
+      "lines": 183,
+      "lang": "vue"
+    },
+    {
+      "id": "src.components.ManualPlayScoreList",
+      "type": "Module",
+      "label": "ManualPlayScoreList",
+      "path": "src/components/ManualPlayScoreList.vue",
+      "lines": 101,
+      "lang": "vue"
+    },
+    {
+      "id": "src.components.ModalLoader",
+      "type": "Module",
+      "label": "ModalLoader",
+      "path": "src/components/ModalLoader.vue",
+      "lines": 67,
+      "lang": "vue"
+    },
+    {
+      "id": "src.components.PageHeader",
+      "type": "Module",
+      "label": "PageHeader",
+      "path": "src/components/PageHeader.vue",
+      "lines": 87,
+      "lang": "vue"
+    },
+    {
+      "id": "src.components.Piano",
+      "type": "Module",
+      "label": "Piano",
+      "path": "src/components/Piano.vue",
+      "lines": 380,
+      "lang": "vue"
+    },
+    {
+      "id": "src.components.RandomLyric",
+      "type": "Module",
+      "label": "RandomLyric",
+      "path": "src/components/RandomLyric.vue",
+      "lines": 69,
+      "lang": "vue"
+    },
+    {
+      "id": "src.config.goods",
+      "type": "Module",
+      "label": "goods",
+      "path": "src/config/goods.js",
+      "lines": 90,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.config.index",
+      "type": "Module",
+      "label": "index",
+      "path": "src/config/index.js",
+      "lines": 37,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.config.links",
+      "type": "Module",
+      "label": "links",
+      "path": "src/config/links.js",
+      "lines": 10,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.config.lyrics",
+      "type": "Module",
+      "label": "lyrics",
+      "path": "src/config/lyrics.js",
+      "lines": 71,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.config.notes",
+      "type": "Module",
+      "label": "notes",
+      "path": "src/config/notes.js",
+      "lines": 131,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.config.scoremanual",
+      "type": "Module",
+      "label": "scoremanual",
+      "path": "src/config/scoremanual.js",
+      "lines": 716,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.config.scoremidi",
+      "type": "Module",
+      "label": "scoremidi",
+      "path": "src/config/scoremidi.js",
+      "lines": 14,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.config.scorenum",
+      "type": "Module",
+      "label": "scorenum",
+      "path": "src/config/scorenum.js",
+      "lines": 151,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.config.scorexml",
+      "type": "Module",
+      "label": "scorexml",
+      "path": "src/config/scorexml.js",
+      "lines": 55,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.config.wallpaper",
+      "type": "Module",
+      "label": "wallpaper",
+      "path": "src/config/wallpaper.js",
+      "lines": 12,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.lib.Tonejs-Instruments",
+      "type": "Module",
+      "label": "Tonejs-Instruments",
+      "path": "src/lib/Tonejs-Instruments.js",
+      "lines": 630,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.lib.wutils",
+      "type": "Module",
+      "label": "wutils",
+      "path": "src/lib/wutils.js",
+      "lines": 1148,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.main",
+      "type": "Module",
+      "label": "main",
+      "path": "src/main.js",
+      "lines": 25,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.mixins.midiAutoPlayMixin",
+      "type": "Module",
+      "label": "midiAutoPlayMixin",
+      "path": "src/mixins/midiAutoPlayMixin.js",
+      "lines": 85,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.mixins.pianoAutoPlayMixin",
+      "type": "Module",
+      "label": "pianoAutoPlayMixin",
+      "path": "src/mixins/pianoAutoPlayMixin.js",
+      "lines": 120,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.mixins.xmlAutoPlayMixin",
+      "type": "Module",
+      "label": "xmlAutoPlayMixin",
+      "path": "src/mixins/xmlAutoPlayMixin.js",
+      "lines": 176,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.pages.AutoPianoMobile",
+      "type": "Module",
+      "label": "AutoPianoMobile",
+      "path": "src/pages/AutoPianoMobile.vue",
+      "lines": 150,
+      "lang": "vue"
+    },
+    {
+      "id": "src.pages.AutoPianoPC",
+      "type": "Module",
+      "label": "AutoPianoPC",
+      "path": "src/pages/AutoPianoPC.vue",
+      "lines": 180,
+      "lang": "vue"
+    },
+    {
+      "id": "src.pages.FriendLinks",
+      "type": "Module",
+      "label": "FriendLinks",
+      "path": "src/pages/FriendLinks.vue",
+      "lines": 112,
+      "lang": "vue"
+    },
+    {
+      "id": "src.router.index",
+      "type": "Module",
+      "label": "index",
+      "path": "src/router/index.js",
+      "lines": 13,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.store.index",
+      "type": "Module",
+      "label": "index",
+      "path": "src/store/index.js",
+      "lines": 15,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.store.modules.autopiano",
+      "type": "Module",
+      "label": "autopiano",
+      "path": "src/store/modules/autopiano.js",
+      "lines": 36,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.utils.index",
+      "type": "Module",
+      "label": "index",
+      "path": "src/utils/index.js",
+      "lines": 7,
+      "lang": "javascript"
+    },
+    {
+      "id": "src.utils.observe",
+      "type": "Module",
+      "label": "observe",
+      "path": "src/utils/observe.js",
+      "lines": 6,
+      "lang": "javascript"
+    },
+    {
+      "id": "static.js.jquery.share.min",
+      "type": "Module",
+      "label": "min",
+      "path": "static/js/jquery.share.min.js",
+      "lines": 1,
+      "lang": "javascript"
+    },
+    {
+      "id": "static.js.jquery3.min",
+      "type": "Module",
+      "label": "min",
+      "path": "static/js/jquery3.min.js",
+      "lines": 2,
+      "lang": "javascript"
+    },
+    {
+      "id": "static.js.livere.min",
+      "type": "Module",
+      "label": "min",
+      "path": "static/js/livere.min.js",
+      "lines": 3,
+      "lang": "javascript"
+    },
+    {
+      "id": "static.js.social-share.min",
+      "type": "Module",
+      "label": "min",
+      "path": "static/js/social-share.min.js",
+      "lines": 1,
+      "lang": "javascript"
+    }
+  ],
+  "edges": [],
+  "_errors": [
+    "/Volumes/111/portable_wd/AutoPiano/.postcssrc.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/config/dev.env.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/config/index.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/config/prod.env.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/goods.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/index.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/links.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/lyrics.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/notes.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/scoremanual.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/scoremidi.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/scorenum.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/scorexml.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/config/wallpaper.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/lib/Tonejs-Instruments.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/lib/wutils.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/main.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/mixins/midiAutoPlayMixin.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/mixins/pianoAutoPlayMixin.js: struct query error: Invalid node type at row 0, column 318: function",
+    "/Volumes/111/portable_wd/AutoPiano/src/mixins/xmlAutoPlayMixin.js: struct query error: Invalid node type at row 0, column 318: function"
+  ],
+  "warnings": [
+    "some languages were parsed with module-only coverage because no structural query template is bundled: vue (13 files)",
+    "custom language configuration loaded: /Volumes/111/portable_wd/AutoPiano/.nexus-map/raw/language-config.json"
+  ]
+}

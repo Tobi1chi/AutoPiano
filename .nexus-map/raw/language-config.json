@@ -1,0 +1,11 @@
+{
+  "extensions": {
+    ".js": "javascript"
+  },
+  "queries": {
+    "javascript": {
+      "struct": "(program [(function_declaration name: (identifier) @function.name) @function.def (class_declaration name: (identifier) @class.name) @class.def (method_definition name: (property_identifier) @method.name) @method.def (lexical_declaration (variable_declarator name: (identifier) @function.name value: [(arrow_function) (function)]) ) @function.def (variable_declaration (variable_declarator name: (identifier) @function.name value: [(arrow_function) (function)]) ) @function.def (assignment_expression left: (member_expression property: (property_identifier) @method.name) right: [(arrow_function) (function)]) @method.def] .*)",
+      "imports": "[(import_statement source: (string) @import.path) (call_expression function: (identifier) @_require (#eq? @_require \"require\") arguments: (arguments (string) @import.path))]"
+    }
+  }
+}

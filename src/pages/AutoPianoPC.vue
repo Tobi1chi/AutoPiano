@@ -20,8 +20,8 @@
     top: 0;
     left: 0;
     z-index: -100;
-    opacity: 0.5;
     background-size: cover;
+    background-position: center center;
     background-repeat: no-repeat;
     transition: all 0.5s linear;
   }
@@ -39,12 +39,6 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-    .section-title {
-      margin: 30px auto 20px;
-      font-size: 28px;
-      font-weight: 500;
-      color: #333;
     }
     .right-drawer {
       width: 500px;
@@ -111,8 +105,6 @@
         <ManualPlayScoreList></ManualPlayScoreList>
         <AutoPlayScoreList></AutoPlayScoreList>
       </div>
-      <h2 class="section-title responsive-section-a">探索实体乐器</h2>
-      <CommodityList />
       <div class="right-drawer" :class="{ show: rightDrawerShow }">
         <div class="trigger" @click="toggleRightDrawer">歌曲列表</div>
         <div class="close" @click="hideRightDrawer">X</div>
@@ -133,10 +125,7 @@ import RandomLyric from "@/components/RandomLyric";
 import Piano from "@/components/Piano";
 import ManualPlayScoreList from "@/components/ManualPlayScoreList";
 import AutoPlayScoreList from "@/components/AutoPlayScoreList";
-import CommodityList from "@/components/CommodityList.vue";
-
-import { mapActions, mapGetters } from "vuex";
-import { OBEvent, Wallpaper } from "@/config";
+import { mapGetters } from "vuex";
 
 export default {
   name: "AutoPianoPC",
@@ -147,7 +136,6 @@ export default {
     Piano,
     ManualPlayScoreList,
     AutoPlayScoreList,
-    CommodityList,
   },
   data() {
     return {
@@ -156,10 +144,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["$currentWallpaper"]),
+    ...mapGetters(["$currentWallpaperStyle"]),
     appBgStyle() {
-      return `background-image: url(${this.$currentWallpaper});`;
-    },
+      return this.$currentWallpaperStyle;
+    }
   },
   mounted() {
     // setTimeout(() => {

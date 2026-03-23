@@ -1,0 +1,231 @@
+{
+  "analysis_period_days": 4000,
+  "stats": {
+    "total_commits": 51,
+    "total_authors": 4
+  },
+  "hotspots": [
+    {
+      "path": "README.md",
+      "changes": 20,
+      "risk": "high"
+    },
+    {
+      "path": "index.html",
+      "changes": 12,
+      "risk": "medium"
+    },
+    {
+      "path": "src/components/Footer.vue",
+      "changes": 10,
+      "risk": "medium"
+    },
+    {
+      "path": "package.json",
+      "changes": 10,
+      "risk": "medium"
+    },
+    {
+      "path": "src/config/scorexml.js",
+      "changes": 10,
+      "risk": "medium"
+    },
+    {
+      "path": "config/index.js",
+      "changes": 9,
+      "risk": "medium"
+    },
+    {
+      "path": "src/components/Piano.vue",
+      "changes": 9,
+      "risk": "medium"
+    },
+    {
+      "path": "src/components/AutoPlayScoreList.vue",
+      "changes": 8,
+      "risk": "medium"
+    },
+    {
+      "path": "src/router/index.js",
+      "changes": 8,
+      "risk": "medium"
+    },
+    {
+      "path": "src/config/lyrics.js",
+      "changes": 7,
+      "risk": "medium"
+    },
+    {
+      "path": "src/pages/AutoPianoPC.vue",
+      "changes": 7,
+      "risk": "medium"
+    },
+    {
+      "path": "build/webpack.prod.conf.js",
+      "changes": 7,
+      "risk": "medium"
+    },
+    {
+      "path": "yarn.lock",
+      "changes": 7,
+      "risk": "medium"
+    },
+    {
+      "path": "src/config/index.js",
+      "changes": 7,
+      "risk": "medium"
+    },
+    {
+      "path": "src/config/wallpaper.js",
+      "changes": 7,
+      "risk": "medium"
+    },
+    {
+      "path": "src/lib/Tonejs-Instruments.js",
+      "changes": 7,
+      "risk": "medium"
+    },
+    {
+      "path": "src/components/VueLivere.vue",
+      "changes": 6,
+      "risk": "medium"
+    },
+    {
+      "path": "src/mixins/xmlAutoPlayMixin.js",
+      "changes": 6,
+      "risk": "medium"
+    },
+    {
+      "path": "src/main.js",
+      "changes": 6,
+      "risk": "medium"
+    },
+    {
+      "path": "src/assets/images/sprite.png",
+      "changes": 6,
+      "risk": "medium"
+    }
+  ],
+  "coupling_pairs": [
+    {
+      "file_a": "config/index.js",
+      "file_b": "index.html",
+      "co_changes": 8,
+      "coupling_score": 0.889
+    },
+    {
+      "file_a": "build/webpack.prod.conf.js",
+      "file_b": "src/components/Footer.vue",
+      "co_changes": 7,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "config/index.js",
+      "file_b": "src/config/scorexml.js",
+      "co_changes": 7,
+      "coupling_score": 0.778
+    },
+    {
+      "file_a": "config/index.js",
+      "file_b": "src/config/wallpaper.js",
+      "co_changes": 7,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "config/index.js",
+      "file_b": "src/lib/Tonejs-Instruments.js",
+      "co_changes": 7,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "index.html",
+      "file_b": "src/config/scorexml.js",
+      "co_changes": 7,
+      "coupling_score": 0.7
+    },
+    {
+      "file_a": "index.html",
+      "file_b": "src/config/wallpaper.js",
+      "co_changes": 7,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "index.html",
+      "file_b": "src/lib/Tonejs-Instruments.js",
+      "co_changes": 7,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "src/config/scorexml.js",
+      "file_b": "src/config/wallpaper.js",
+      "co_changes": 7,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "index.html",
+      "file_b": "src/components/Piano.vue",
+      "co_changes": 7,
+      "coupling_score": 0.778
+    },
+    {
+      "file_a": "index.html",
+      "file_b": "src/router/index.js",
+      "co_changes": 7,
+      "coupling_score": 0.875
+    },
+    {
+      "file_a": "src/components/Piano.vue",
+      "file_b": "src/router/index.js",
+      "co_changes": 7,
+      "coupling_score": 0.875
+    },
+    {
+      "file_a": "src/components/Footer.vue",
+      "file_b": "src/components/Piano.vue",
+      "co_changes": 7,
+      "coupling_score": 0.778
+    },
+    {
+      "file_a": "package.json",
+      "file_b": "yarn.lock",
+      "co_changes": 6,
+      "coupling_score": 0.857
+    },
+    {
+      "file_a": "package.json",
+      "file_b": "src/components/Footer.vue",
+      "co_changes": 6,
+      "coupling_score": 0.6
+    },
+    {
+      "file_a": "package.json",
+      "file_b": "src/components/AutoPlayScoreList.vue",
+      "co_changes": 6,
+      "coupling_score": 0.75
+    },
+    {
+      "file_a": "package.json",
+      "file_b": "src/components/Piano.vue",
+      "co_changes": 6,
+      "coupling_score": 0.667
+    },
+    {
+      "file_a": "package.json",
+      "file_b": "src/config/index.js",
+      "co_changes": 6,
+      "coupling_score": 0.857
+    },
+    {
+      "file_a": "src/components/Piano.vue",
+      "file_b": "src/config/index.js",
+      "co_changes": 6,
+      "coupling_score": 0.857
+    },
+    {
+      "file_a": "config/index.js",
+      "file_b": "src/config/index.js",
+      "co_changes": 6,
+      "coupling_score": 0.857
+    }
+  ]
+}

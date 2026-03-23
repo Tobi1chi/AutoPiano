@@ -7,13 +7,17 @@
       .trade-mark-txt--en { font-style: italic; font-size: 20px; color: #666; margin-left: 7px; }
     }
   }
-  .menu { float: right; height: 45px; line-height: 45px; margin-top: 5px;
+    .menu { float: right; height: 45px; line-height: 45px; margin-top: 5px;
     .menu-item { display: inline-block; width: 80px; margin: 0 7px; text-align: center; position: relative; cursor: pointer;
       &::before { content: ''; width: 100%; height: 1px; position: absolute; left: 0; bottom: 0; transform: scaleX(1); transition: 0.3s; background: #ccc; }
       &::after { content: ''; width: 100%; height: 5px; position: absolute; left: 0; bottom: 0; transform: scaleX(0); transition: 0.3s; background: @c-blue; }
     }
     .menu-item-active::after { transform: scaleX(1); }
     .menu-item:hover::after { transform: scaleX(1); }
+  }
+
+  .wallpaper-upload-input {
+    display: none;
   }
 }
 </style>
@@ -27,60 +31,84 @@
     <div class="menu">
       <router-link class="menu-item" :to="{ path: '/' }" active-class="menu-item-active" exact>首页</router-link>
       <router-link class="menu-item" :to="{ path: '/links' }" active-class="menu-item-active" exact>友情链接</router-link>
-      <a class="menu-item" @click.stop="emitChangeWallPaper">更换壁纸</a>
+      <a class="menu-item" @click.stop="openUploadDialog">上传壁纸</a>
+      <a class="menu-item" @click.stop="resetWallpaper">默认底色</a>
       <!--<a class="menu-item" >钢琴基础教学</a>-->
     </div>
+    <input
+      ref="wallpaperInput"
+      class="wallpaper-upload-input"
+      type="file"
+      accept="image/*"
+      @change="handleWallpaperSelected"
+    >
+
+    <WallpaperCropper
+      :visible="cropperVisible"
+      :image-src="cropperImageSrc"
+      @cancel="closeCropper"
+      @apply="applyUploadedWallpaper"
+    />
   </div>
 </template>
 
 <script>
-import Observe from 'observe'
 import { mapActions } from 'vuex'
-import { OBEvent, Wallpaper } from '@/config'
+import WallpaperCropper from '@/components/WallpaperCropper'
 
 export default {
   name: 'PageHeader',
-  components: {},
+  components: {
+    WallpaperCropper
+  },
   mixins: [],
   props: [],
   data() {
     return {
-      wallpaperLoading: false
+      cropperVisible: false,
+      cropperImageSrc: ''
     }
   },
   computed: {},
-  mounted() {
-    Observe.$on(OBEvent.CHANGE_WALLPAPER, () => {
-      this.setRandomWallPaper();
-    })
-  },
+  mounted() {},
   watch: {},
   methods: {
     ...mapActions([
-			'$setWallpaper'
+			'$setWallpaper',
+      '$resetWallpaper'
 		]),
-    emitChangeWallPaper() {
-      if (this.wallpaperLoading) return
-      Observe.$emit(OBEvent.CHANGE_WALLPAPER)
-    },
-    // 随机背景壁纸
-    setRandomWallPaper() {
-      this.wallpaperLoading = true
-      let len = Wallpaper.length
-      let src = ''
-      do {
-        let random = Math.floor(Math.random() * len)
-        src = Wallpaper[random]
-      } while (!src || src == this.$currentWallpaper)
-
-      let img = new Image();
-      img.src = src
-      img.onload = () => {
-        this.wallpaperLoading = false
-        this.$setWallpaper(src)
-        img = null
+    openUploadDialog() {
+      if (this.$refs.wallpaperInput) {
+        this.$refs.wallpaperInput.value = ''
+        this.$refs.wallpaperInput.click()
       }
     },
+    handleWallpaperSelected(event) {
+      const file = event.target.files && event.target.files[0]
+      if (!file) return
+
+      const reader = new FileReader()
+      reader.onload = () => {
+        this.cropperImageSrc = reader.result
+        this.cropperVisible = true
+      }
+      reader.readAsDataURL(file)
+    },
+    closeCropper() {
+      this.cropperVisible = false
+      this.cropperImageSrc = ''
+    },
+    applyUploadedWallpaper(croppedImage) {
+      this.$setWallpaper({
+        type: 'image',
+        value: croppedImage
+      })
+      this.closeCropper()
+    },
+    resetWallpaper() {
+      this.closeCropper()
+      this.$resetWallpaper()
+    }
   }
 }
 </script>

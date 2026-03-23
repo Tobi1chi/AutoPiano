@@ -2,7 +2,7 @@
 @import url('../assets/style/variable.less');
 
 .page-links { width: 100%; min-width: 1280px; height: 100%; padding: 1px; font-family: 'Avenir', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; color: #2c3e50; position: absolute; top: 0; left: 0; overflow-x: scroll;
-  .app-bg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: -100; opacity: 0.5; background-size: cover; background-repeat: no-repeat; transition: all .5s linear; }
+  .app-bg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: -100; background-size: cover; background-position: center center; background-repeat: no-repeat; transition: all .5s linear; }
   .app-content { width: 100%; height: 100%; overflow-y: scroll; position: relative;
 
     .links-wrap { width: 1100px; margin: 50px auto; border-radius: 5px; overflow: hidden;
@@ -79,8 +79,8 @@
 import PageHeader from '@/components/PageHeader'
 import PageFooter from '@/components/Footer'
 
-import { mapActions, mapGetters } from 'vuex'
-import { Links, Wallpaper } from '@/config'
+import { mapGetters } from 'vuex'
+import { Links } from '@/config'
 
 export default {
   name: '',
@@ -97,10 +97,10 @@ export default {
   },
   computed: {
 		...mapGetters([
-			'$currentWallpaper'
+			'$currentWallpaperStyle'
     ]),
     appBgStyle() {
-      return `background-image: url(${this.$currentWallpaper});`
+      return this.$currentWallpaperStyle
     }
   },
   mounted() {

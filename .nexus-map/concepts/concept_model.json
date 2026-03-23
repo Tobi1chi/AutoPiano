@@ -1,0 +1,155 @@
+{
+  "schema_version": "v1",
+  "verified_at": "2026-03-23",
+  "repo_path": "/Volumes/111/portable_wd/AutoPiano",
+  "summary": {
+    "app_type": "Vue 2 single-page web piano app",
+    "primary_entrypoint": "src/main.js",
+    "primary_route": "src/pages/AutoPianoPC.vue",
+    "state_model": "Vuex for wallpaper + Observe event bus for workflow",
+    "analysis_downgrades": [
+      "Vue files have module-only AST coverage",
+      "Dependency graph is partly inferred from manual inspection"
+    ]
+  },
+  "systems": [
+    {
+      "id": "bootstrap",
+      "name": "Bootstrap and shell",
+      "files": [
+        "src/main.js",
+        "src/App.vue",
+        "src/router/index.js",
+        "src/store/index.js"
+      ]
+    },
+    {
+      "id": "main_page",
+      "name": "Main piano page",
+      "files": [
+        "src/pages/AutoPianoPC.vue",
+        "src/components/PageHeader.vue",
+        "src/components/Piano.vue",
+        "src/components/ManualPlayScoreList.vue",
+        "src/components/AutoPlayScoreList.vue",
+        "src/components/Footer.vue",
+        "src/components/CommodityList.vue"
+      ]
+    },
+    {
+      "id": "playback",
+      "name": "Playback engine",
+      "files": [
+        "src/components/Piano.vue",
+        "src/mixins/pianoAutoPlayMixin.js",
+        "src/mixins/xmlAutoPlayMixin.js",
+        "src/mixins/midiAutoPlayMixin.js",
+        "src/lib/Tonejs-Instruments.js",
+        "src/utils/index.js"
+      ]
+    },
+    {
+      "id": "catalogs",
+      "name": "Static catalogs and media",
+      "files": [
+        "src/config/index.js",
+        "src/config/scoremanual.js",
+        "src/config/scorenum.js",
+        "src/config/scorexml.js",
+        "src/config/scoremidi.js",
+        "src/config/wallpaper.js",
+        "static/xmlscore",
+        "static/midi",
+        "static/samples/piano"
+      ]
+    },
+    {
+      "id": "build",
+      "name": "Legacy webpack build",
+      "files": [
+        "build",
+        "config",
+        "index.html",
+        "package.json"
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "name": "Note",
+      "source": "src/config/notes.js",
+      "used_by": [
+        "src/components/Piano.vue",
+        "src/utils/index.js",
+        "src/lib/Tonejs-Instruments.js"
+      ]
+    },
+    {
+      "name": "OBEvent",
+      "source": "src/config/index.js",
+      "used_by": [
+        "src/components/PageHeader.vue",
+        "src/components/AutoPlayScoreList.vue",
+        "src/components/Piano.vue"
+      ]
+    },
+    {
+      "name": "Wallpaper",
+      "source": "src/config/wallpaper.js",
+      "used_by": [
+        "src/components/PageHeader.vue",
+        "src/pages/AutoPianoPC.vue",
+        "src/pages/FriendLinks.vue",
+        "src/store/modules/autopiano.js"
+      ]
+    },
+    {
+      "name": "ScoreManual",
+      "source": "src/config/scoremanual.js",
+      "used_by": [
+        "src/components/ManualPlayScoreList.vue"
+      ]
+    },
+    {
+      "name": "ScoreNum",
+      "source": "src/config/scorenum.js",
+      "used_by": [
+        "src/components/AutoPlayScoreList.vue",
+        "src/mixins/pianoAutoPlayMixin.js"
+      ]
+    },
+    {
+      "name": "ScoreXml",
+      "source": "src/config/scorexml.js",
+      "used_by": [
+        "src/components/AutoPlayScoreList.vue",
+        "src/mixins/xmlAutoPlayMixin.js"
+      ]
+    },
+    {
+      "name": "ScoreMidi",
+      "source": "src/config/scoremidi.js",
+      "used_by": [
+        "src/components/AutoPlayScoreList.vue",
+        "src/mixins/midiAutoPlayMixin.js"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "path": "/",
+      "component": "src/pages/AutoPianoPC.vue"
+    },
+    {
+      "path": "/links",
+      "component": "src/pages/FriendLinks.vue"
+    }
+  ],
+  "known_orphans": [
+    "src/pages/AutoPianoMobile.vue"
+  ],
+  "tests": {
+    "present": false,
+    "evidence": "No test/spec files found by repository scan"
+  }
+}

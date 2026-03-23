@@ -4,7 +4,10 @@ var webpack = require("webpack");
 var config = require("../config");
 var merge = require("webpack-merge");
 var baseWebpackConfig = require("./webpack.base.conf");
-var CleanWebpackPlugin = require("clean-webpack-plugin");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var OptimizeCSSPlugin = require("optimize-css-assets-webpack-plugin");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var CopyWebpackPlugin = require("copy-webpack-plugin");
 
 var env = config.build.env;
 
@@ -26,7 +29,43 @@ var webpackConfig = merge(baseWebpackConfig, {
   //   filename: utils.assetsPath('js/[name].js'),
   //   chunkFilename: utils.assetsPath('js/[id].js')
   // },
-  plugins: []
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env": env
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      },
+      sourceMap: config.build.productionSourceMap
+    }),
+    new ExtractTextPlugin({
+      filename: utils.assetsPath("css/[name].[contenthash].css")
+    }),
+    new OptimizeCSSPlugin({
+      cssProcessorOptions: config.build.productionSourceMap
+        ? { safe: true, map: { inline: false } }
+        : { safe: true }
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.index,
+      template: "index.html",
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: "dependency"
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, "../static"),
+        to: config.build.assetsSubDirectory,
+        ignore: [".*"]
+      }
+    ])
+  ]
 });
 
 if (config.build.productionGzip) {
